@@ -19,11 +19,11 @@ struct WolArgs {
 
 fn main() -> Result<()> {
     let args = WolArgs::parse();
-    run_program(args.mac_address, args.ip_address);
+    run_program(args.mac_address, args.ip_address)?;
     Ok(())
 }
 
-fn run_program(mac_address: MacAddress, ip_address: Ipv4Addr) {
+fn run_program(mac_address: MacAddress, ip_address: Ipv4Addr) -> Result<()> {
     let mac_address = mac_address.bytes();
     let wol_sock = UdpSocket::bind("0.0.0.0:0").expect("Cannot bind UDP socket!");
     wol_sock.set_broadcast(true).expect("Cannot broadcast!");
@@ -33,4 +33,5 @@ fn run_program(mac_address: MacAddress, ip_address: Ipv4Addr) {
     wol_sock
         .send_to(&magic_packet, (ip_address, 9))
         .expect("Cannot send Wake-on-LAN packet!");
+    Ok(())
 }
